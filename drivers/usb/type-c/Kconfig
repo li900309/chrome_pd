@@ -1,0 +1,47 @@
+
+menu "USB PD and Type-C drivers"
+
+config TYPEC
+	tristate
+
+config TYPEC_UCSI
+	tristate "USB Type-C Connector System Software Interface"
+	select TYPEC
+	help
+	  USB Type-C Connector System Software Interface (UCSI) describes the
+	  registers and data structures used to interface with the USB Type-C
+	  connectors on a system.
+
+config TYPEC_TCPM
+	tristate "USB Type-C Port Controller Manager"
+	select TYPEC
+	help
+	  The Type-C Port Controller Manager provides a USB PD and USB Type-C
+	  state machine for use with Type-C Port Controllers.
+
+if TYPEC_UCSI
+
+config TYPEC_UCSI_ACPI
+	tristate "UCSI ACPI Driver"
+	depends on ACPI
+	help
+	  Driver for ACPI enumerated UCSI devices.
+
+endif
+
+if TYPEC_TCPM
+
+config TYPEC_TCPCI
+	tristate "Type-C Port Controller Interface driver"
+	help
+	  Type-C Port Controller driver for TCPCI-compliant controller.
+
+config TYPEC_CROS_EC
+	tristate "Chrome EC Type-C Port Controller driver"
+	depends on MFD_CROS_EC
+	help
+	  Chrome EC Type-C Port Controller driver.
+
+endif
+
+endmenu

@@ -911,9 +911,20 @@ static SIMPLE_DEV_PM_OPS(cros_ec_pd_pm,
 	cros_ec_pd_suspend, cros_ec_pd_resume);
 
 #ifdef CONFIG_ACPI
+static void *tcpci = NULL;
+
+void cros_ec_pd_update_register_tcpci(void *dev_id)
+{
+	tcpci = dev_id;
+}
+
+extern void cros_ec_tcpci_notify(int event, void *tcpci);
 static void acpi_cros_ec_pd_notify(struct acpi_device *acpi_device, u32 event)
 {
-	cros_ec_pd_notify(&acpi_device->dev, event);
+	if (tcpci != NULL)
+		cros_ec_tcpci_notify(event, tcpci);
+	else
+		cros_ec_pd_notify(&acpi_device->dev, event);
 }
 
 static int acpi_cros_ec_pd_add(struct acpi_device *acpi_device)
